@@ -1,114 +1,90 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
-  View,
   Text,
-  StatusBar,
+  View,
+  TextInput,
+  Image,
+  TouchableHighlight,
+  Alert,
+  ScrollView,
 } from 'react-native';
+import TodoList from './TodoList';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const addImage = require('./assets/Images/plus.png');
 
-const App: () => React$Node = () => {
+export default function App() {
+  const [singleTodo, setSingleTodo] = useState('');
+  const [todos, insertIntoTodos] = useState([]);
+  addNewTodo = () => {
+    if (singleTodo.length > 0) {
+      insertIntoTodos([
+        ...todos,
+        { text: singleTodo, key: Date.now().toString(), checked: false },
+      ]);
+      setSingleTodo('');
+      Alert.alert('done!', 'todo was added');
+    }
+  };
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.header}>{'Todo List'}</Text>
+      <View style={styles.textInputContainer}>
+        <TextInput
+          style={styles.textInput}
+          multiline={true}
+          placeholder="What do you want to do today?"
+          placeholderTextColor="#abbabb"
+          value={singleTodo}
+        />
+        <TouchableHighlight
+          onPress={() => Alert.alert('done!', 'todo was deleted')}
+          underlayColor={'transpatent'}>
+          <Image source={addImage} style={styles.trash} />
+        </TouchableHighlight>
+      </View>
+      <ScrollView style={{ width: '100%' }}>
+        {todos.map(item => (
+          <TodoList text={item.text} key={item.key} />
+        ))}
+      </ScrollView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+  header: {
+    marginTop: '15%',
+    fontSize: 20,
+    color: '#51008f',
+    paddingBottom: 10,
   },
-  body: {
-    backgroundColor: Colors.white,
+  textInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // justifyContent: 'center',
+    borderColor: 'black',
+    borderBottomWidth: 1,
+    paddingVertical: 0,
+    paddingHorizontal: 5,
   },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
+  textInput: {
+    flex: 1,
+    height: 50,
     fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingLeft: 10,
+    minHeight: '3%',
   },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  trash: {
+    height: 35,
+    width: 35,
   },
 });
-
-export default App;
